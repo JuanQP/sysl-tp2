@@ -18,4 +18,4 @@ El [capítulo 3][1] es necesario para entender qué es una BNF (qué es un lexem
 El [capítulo 8][2] es necesario para entender el comportamiento de un compilador y ver el pseudocódigo que explica el funcionamiento de un compilador del lenguaje Micro.
 
 [1]: https://www.dropbox.com/sh/nr1zia5bz1tgdu0/AAAbIArF7-gDmO9FcUCuqv3Da/Apuntes%20y%20Ejercicios/03-SintaxisBNF.pdf?dl=0
-[2]: https://www.dropbox.com/sh/nr1zia5bz1tgdu0/AABLVZ71SUlrZ9BvhriKo57qa/Apuntes%20y%20Ejercicios?dl=0
+[2]: https://www.dropbox.com/sh/nr1zia5bz1tgdu0/AADuFldyjY-BjwPTU7A9VU9pa/Apuntes%20y%20Ejercicios/08-ProcesoCompilaci%C3%B3n.pdf?dl=0
