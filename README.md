@@ -4,4 +4,18 @@
 
 Hay que armar un compilador (modificado) del lenguaje Micro siguiendo las instrucciones mencionadas en los .pdf
 
-El capítulo 8 es necesario para entender la teoría detrás del programa. Está en la [carpeta de apuntes](https://www.dropbox.com/sh/nr1zia5bz1tgdu0/AABLVZ71SUlrZ9BvhriKo57qa/Apuntes%20y%20Ejercicios?dl=0).
+## Teoría necesaria
+
+### Primer entrega
+
+La primer entrega del TP requiere un programa que al menos permita servir como reconocedor léxico. Es decir, que tiene que poder leer los caracteres
+de un código de fuente del lenguaje Micro, y a medida que va leyendo tiene que poder *entender* las palabras que lee y clasificarlas. Es decir
+que debería poder ser capaz de (por ejemplo) al leer `int` lo guarde en una tabla de lexemas (palabras reconocidas) y que la clasifique como
+*palabra reservada*.
+
+El [capítulo 3][1] es necesario para entender qué es una BNF (qué es un lexema, qué es una gramática léxica de un lenguaje, etc...).
+
+El [capítulo 8][2] es necesario para entender el comportamiento de un compilador y ver el pseudocódigo que explica el funcionamiento de un compilador del lenguaje Micro.
+
+[1]: https://www.dropbox.com/sh/nr1zia5bz1tgdu0/AAAbIArF7-gDmO9FcUCuqv3Da/Apuntes%20y%20Ejercicios/03-SintaxisBNF.pdf?dl=0
+[2]: https://www.dropbox.com/sh/nr1zia5bz1tgdu0/AABLVZ71SUlrZ9BvhriKo57qa/Apuntes%20y%20Ejercicios?dl=0
