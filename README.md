@@ -1,6 +1,6 @@
 ## Trabajo Práctico Número 2
 
-**Fecha de Entrega: 18/09/2015**
+**Fecha de Primer Entrega: 18/09/2015**
 
 Hay que armar un compilador (modificado) del lenguaje Micro siguiendo las instrucciones mencionadas en los .pdf
 
