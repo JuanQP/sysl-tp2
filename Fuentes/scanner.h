@@ -11,5 +11,6 @@ extern char * const yytext;
 extern char *tok_names[];
 token prox_token(void);
 void match(token tok);
+token scanner(void);
 
 #endif
