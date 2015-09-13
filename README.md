@@ -17,6 +17,21 @@ El [capítulo 3][1] es necesario para entender qué es una BNF (qué es un lexem
 
 El [capítulo 8][2] (hasta la hoja 17 inclusive) es necesario para entender el comportamiento de un compilador y ver el pseudocódigo que explica el funcionamiento de un compilador del lenguaje Micro. Esas 17 hojas explican el funcionamiento de la primer etapa de un compilador: el **Scanner**. 
 
+**Gramática Léxica**
+
+|Nombre|Descripción|
+|:----:|-----------|
+|token | **uno de** identificador constante palabraReservada operadorAditivo asignacion caracterPuntuacion|
+|identificador| letra {letra o digito}|
+|letra o digito| uno de letra digito|
+|letra| una de a-z A-Z|
+|digito| uno de 0-9|
+|palabraReservada| **uno de** inicio fin leer escribir|
+|operadorAditivo| **uno de** + -|
+|operadorMultiplicativo| **uno de** *asterisco* /|
+|asignacion| := |
+|caracterPuntuacion| **uno de** ( ) , ;|
+
 [1]: https://www.dropbox.com/sh/nr1zia5bz1tgdu0/AAAbIArF7-gDmO9FcUCuqv3Da/Apuntes%20y%20Ejercicios/03-SintaxisBNF.pdf?dl=0
 [2]: https://www.dropbox.com/sh/nr1zia5bz1tgdu0/AADuFldyjY-BjwPTU7A9VU9pa/Apuntes%20y%20Ejercicios/08-ProcesoCompilaci%C3%B3n.pdf?dl=0
 [3]: http://ur1.ca/h9w5u
