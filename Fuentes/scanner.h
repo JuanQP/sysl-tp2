@@ -12,4 +12,4 @@ extern char *tok_names[];
 token prox_token(void);
 void match(token tok);
 
-#endif // SCANNER_H_INCLUDED
+#endif
