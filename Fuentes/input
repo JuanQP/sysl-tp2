@@ -1,3 +1,4 @@
+inicio
 //Ejemplos de lexemas funcionando bien.
 suma := (2 + 3) + 5;
 sumaMasGrande := suma + 100;
@@ -20,3 +21,9 @@ malaAsig : a + b;
 
 //Un identificador con numeros.
 idConNumeros123 := ((2+3) - 1);
+
+//Probamos con leer y escribir.
+leer(num1, num2, num3, num4);
+sumatoria := num1 + num2 + num3 + num4;
+escribir(sumatoria);
+fin
