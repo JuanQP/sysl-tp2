@@ -1,0 +1,7 @@
+suma := (2 + 3) + 5;
+sumaMasGrande := suma + 100;
+unaResta := suma - 50;
+
+
+
+idConNumeros123 := ((2+3) - 1);
