@@ -7,7 +7,8 @@ unaResta := suma - 50;
 //Lexema que deberia dar error lexico.
 #algunawea;
 hol@ := a + b
-41suma;
+leer(#asd);
+malNumero := 123asd456;
 
 //Identificadores pegados a los operadores.
 variable:=((a+b)*3)/4;

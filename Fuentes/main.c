@@ -10,26 +10,28 @@ void encabezado();
 int main()
 {
     /*Guardo los nombres de los tokens.*/
-    char *nombresToken[20] = {"Palabra Reservada INICIO","Palabra Reservada FIN","Palabra Reservada LEER","Palabra Reservada ESCRIBIR",
-        "Identificador","Constante","ParenIzquierdo","ParenDerecho",
+    char *nombresToken[20] = {"PalabraReservada INICIO","PalabraReservada FIN","PalabraReservada LEER","PalabraReservada ESCRIBIR",
+        "Identificador","Constante","ParentesisIzquierdo","ParentesisDerecho",
         "PuntoYComa", "Coma", "Asignacion", "Suma",
         "Resta", "Multiplicacion", "Division", "Comentario",
-        "FinDeTexto", "ErrorLexico", "ErrorAsignacion", "ErrorConstante"};
+        "FinDeTexto", "ErrorLexico", "ErrorAsignacion", "ErrorDeConstante"};
     
-    /*Guardo el token actual (numero).*/
+    /*Inicializo el token actual con cualquier valor.*/
     token tokenActual = INICIO;
+    
+    /*Imprimo un encabezado.*/
     encabezado();
     printf("[Scanner]: Reconociendo lexemas...\n\n");
-       
-    /*Llamo al Scanner para que recorra el archivo de texto.*/
+     
+    /*Itero mientras no se haya reconocido el token de Fin de Texto.*/
     while(tokenActual != FDT)
     {
         /*Llamo a scanner para que lea el siguiente lexema y me devuelva
         el token correspondiente.*/
         tokenActual = scanner();
         /*Imprimo la informacion correspondiente al token leido.*/
-        printf("Lexema: %s\n", yytext);
-        printf("Token : %s\n", nombresToken[tokenActual]);
+        printf("Linea %d: '%s' - ", numeroLinea,  yytext);
+        printf("Token: %s\n", nombresToken[tokenActual]);
     }
 
     printf("\n[Scanner]: Trabajo terminado.\n");
