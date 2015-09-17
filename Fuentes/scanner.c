@@ -48,28 +48,62 @@ token scanner()
     };   
     
     letra = getchar();
-
-    /*Mientras no se haya reconocido FDT.*/
-    while(estado != 13)
+    /*Mientras no estè en estado aceptor.*/
+    while(!esAceptor(estado))
     {
+	/*Consulto cual es el proximo estado.*/
         proximoEstado = tablaTransicion[estado][columna(letra)];
-        if (esAceptor(proximoEstado))
-        {
-            estado = proximoEstado;
-            ungetc(letra, stdin);
-            break;
-        }
-        estado = proximoEstado;
         
-        /*Los espacios se ignoran.*/
-        if(letra != ' ' && letra != '\n')
+	/*El proximo estado es aceptor.*/
+	if (esAceptor(proximoEstado))
         {
-            buffer[i] = letra;
-            i++;
+	    /*Si estaba en el estado 0, significa que va a reconocer un lexema de 1 caracter.
+	    Por lo tanto, el caracter recien leido es el lexema.*/
+	    if(estado == 0)
+	    {
+		buffer[i] = letra;
+                i++;
+	    }
+	    /*Si no estaba en el estado 0, significa que estaba reconociendo un lexema
+	    que está compuesto por más de 1 caracter.
+            Puede ocurrir que tenga que devolver el centinela o que tenga que quedarse
+            con el caracter si es uno compuesto como := */
+	    else
+	    {
+                /*Si la letra recien leida es = significa que es estado aceptor de := */
+	        if(letra == '=')
+                {
+                    buffer[i] = letra;
+                    i++;
+		}
+                /*Caso contrario, es cualquier otro de los lexemas que necesitan un centinela,
+                y como acabo de leer un centinela, tengo que devolverlo.*/
+		else
+		{
+                    ungetc(letra, stdin);
+		}
+	    }
         }
-        letra = getchar();
+
+        /*El estado no es aceptor.*/
+        else
+	{
+	    /*Si no es un espacio o nueva línea, lo pongo en el string.*/
+	    if(letra != ' ' && letra != '\n')
+	    {
+	        buffer[i] = letra;
+		i++;
+	    }
+            
+            /*Leo el proximo caracter.*/
+            letra = getchar();
+	}
+
+        /*Asigno el estado en el que se encuentra. Si es aceptor, deja de iterar.*/
+	estado = proximoEstado;
     }
-    
+
+    /*Pongo el fin de línea en el lexema.*/
     buffer[i]='\0';
     return tokenCorrespondiente(estado);
 }
@@ -102,35 +136,62 @@ int esAceptor(int estado)
 /*Devuelve el indice de la columna que le corresponde al caracter.*/
 int columna(char letra)
 {
-    if(isalpha(letra))
-    {
-        return 0;
-    }
-    if(letra == ' ')
-    {
-        return 11;
-    }
-    if(letra == EOF)
-    {
-        return 10;
-    }
+    if(isalpha(letra))  return 0;
+
+    if(isdigit(letra))  return 1;    
+    
+    if(letra == '+')    return 2;
+
+    if(letra == '-')    return 3;
+    
+    if(letra == '(')    return 4;
+
+    if(letra == ')')    return 5;
+    
+    if(letra == ',')    return 6;
+    
+    if(letra == ';')    return 7;
+
+    if(letra == ':')    return 8;
+    
+    if(letra == '=')    return 9;
+    
+    if(letra == EOF)    return 10;
+
+    if(letra == ' ' || letra == '\n')    return 11;
+
+    /*Si llego hasta aca es porque es "cualquier otra cosa".*/
+    return 12;
 }
 
 /*Informa si la palabra pasada por parametro es una palabra reservada.*/
 int esPalabraReservada(char *letra)
 {
-    
+    /*Falta código.*/
 }
 
+/*Una vez obtenido el estado final (se finalizo de reconocer la palabra), 
+se devuelve el token correspondiente a dicho estado final.*/
 token tokenCorrespondiente(int estado)
 {
-    if(estado == 2)
-    {
-        return ID;
-    }
+	
+    if(estado == 2)     return ID;
+    
+    if(estado == 4)	return CONSTANTE;
+    
+    if(estado == 5)	return SUMA;
 
-    if(estado == 13)
-    {
-        return FDT;
-    }
+    if(estado == 6)	return RESTA;
+
+    if(estado == 7)	return PARENIZQUIERDO;
+
+    if(estado == 8)	return PARENDERECHO;
+
+    if(estado == 9)	return COMA;
+
+    if(estado == 10)	return PUNTOYCOMA;
+
+    if(estado == 12)	return ASIGNACION;
+	
+    if(estado == 13)	return FDT;
 }

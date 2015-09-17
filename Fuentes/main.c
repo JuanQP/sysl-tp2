@@ -17,28 +17,29 @@ int main()
         "FinDeTexto", "ErrorLexico", "ErrorAsignacion", "ErrorConstante"};
     
     /*Guardo el token actual (numero).*/
-    token tokenActual;
-    
+    token tokenActual = INICIO;
     encabezado();
-
+    printf("[Scanner]: Reconociendo lexemas...\n\n");
+       
     /*Llamo al Scanner para que recorra el archivo de texto.*/
     while(tokenActual != FDT)
     {
         /*Llamo a scanner para que lea el siguiente lexema y me devuelva
         el token correspondiente.*/
         tokenActual = scanner();
-        
         /*Imprimo la informacion correspondiente al token leido.*/
         printf("Lexema: %s\n", yytext);
         printf("Token : %s\n", nombresToken[tokenActual]);
-        printf("\n");
     }
+
+    printf("\n[Scanner]: Trabajo terminado.\n");
 }
 
 /*Imprime un bonito encabezado al principio del programa :v*/
 void encabezado()
 {
-    printf("\n");
-    printf("Sintaxis y Semantica de Lenguajes - UTN K2055 Grupo 3\n");
-    printf("COMPILADOR DE LENGUAJE MICRO - Scanner\n\n");
+    puts("*******************************************************");
+    puts("*Sintaxis y Semantica de Lenguajes - UTN K2055 Grupo 3*");
+    puts("*     COMPILADOR DE LENGUAJE MICRO - Scanner          *");
+    puts("*******************************************************");
 }
