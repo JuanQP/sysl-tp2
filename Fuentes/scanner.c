@@ -1,12 +1,15 @@
 #include <stdio.h>
 #include "scanner.h"
 #include <ctype.h>
+#include <string.h>
 
 static char buffer[100];
 char *const yytext = buffer;
 int columna(char);
 int esAceptor(int);
 token tokenCorrespondiente(int);
+int sonIguales(char*, char*);
+token verificarPalabraReservada();
 
 token prox_token()
 {
@@ -194,17 +197,27 @@ int columna(char letra)
 }
 
 /*Informa si la palabra pasada por parametro es una palabra reservada.*/
-int esPalabraReservada(char *letra)
+token verificarPalabraReservada()
 {
-    /*Falta código.*/
+    
+    if(sonIguales(buffer, "inicio"))    return INICIO;
+    if(sonIguales(buffer, "fin"))       return FIN;
+    if(sonIguales(buffer, "leer"))       return LEER;
+    if(sonIguales(buffer, "escribir"))   return ESCRIBIR;
+
+    /*Si llego hasta aca es porque no es palabra reservada.*/
+    return ID;
 }
 
 /*Una vez obtenido el estado final (se finalizo de reconocer la palabra), 
 se devuelve el token correspondiente a dicho estado final.*/
 token tokenCorrespondiente(int estado)
 {
-	
-    if(estado == 2)     return ID;
+    /*Es un identificador. Tenemos que ver si es palabra reservada.*/	
+    if(estado == 2)
+    {
+        return verificarPalabraReservada();
+    }
     
     if(estado == 4)	return CONSTANTE;
     
@@ -234,4 +247,10 @@ token tokenCorrespondiente(int estado)
     
     if(estado == 21)    return ERRORASIG;
 
+}
+
+/*Verifica si dos lexemas son iguales.*/
+int sonIguales(char *primerLexema, char *segundoLexema)
+{
+    return (strcmp(primerLexema, segundoLexema) == 0);
 }

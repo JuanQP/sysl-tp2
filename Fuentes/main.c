@@ -10,7 +10,7 @@ void encabezado();
 int main()
 {
     /*Guardo los nombres de los tokens.*/
-    char *nombresToken[20] = {"Inicio","Fin","Leer","Escribir",
+    char *nombresToken[20] = {"Palabra Reservada INICIO","Palabra Reservada FIN","Palabra Reservada LEER","Palabra Reservada ESCRIBIR",
         "Identificador","Constante","ParenIzquierdo","ParenDerecho",
         "PuntoYComa", "Coma", "Asignacion", "Suma",
         "Resta", "Multiplicacion", "Division", "Comentario",
