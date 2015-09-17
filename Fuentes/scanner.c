@@ -5,6 +5,7 @@
 
 static char buffer[100];
 char *const yytext = buffer;
+int numeroLinea = 1;
 int columna(char);
 int esAceptor(int);
 token tokenCorrespondiente(int);
@@ -25,18 +26,21 @@ void match(token tok)
 
 token scanner()
 {
+    /*Indice para iterar en el buffer.*/
     int i = 0;
     int estado = 0;
     int proximoEstado = 0;
+
+    /*La letra actualmente siendo scaneada.*/
     char letra = '\0';
     
     /*Defino la tabla de transición (Leer documentación).*/
-    int tablaTransicion[22][16] = 
+    int tablaTransicion[24][16] = 
     {
     { 1, 3, 5, 6, 7, 8, 9,10,11,14,13, 0,14,16,17, 0},/*0: Inicio.*/
     { 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,14, 2, 2, 2},/*1: Reconociendo identificador.*/
     {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*2: Identificador reconocido.*/
-    {14, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,14, 4, 4, 4},/*3: Reconociendo constante.*/
+    {22, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,22, 4, 4, 4},/*3: Reconociendo constante.*/
     {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*4: Constante reconocida.*/
     {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*5: Operador suma.*/
     {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*6: Operador resta.*/
@@ -55,6 +59,8 @@ token scanner()
     {19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,20},/*19: Reconociendo comentario (tiene //).*/
     {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*20: Comentario reconocido.*/
     {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*21: Error de asignación.*/
+    {22,22,23,23,23,23,23,23,23,23,23,23,22,23,23,23},/*22: Reconociendo error de Constante.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99} /*23: Error de Constante reconocido.*/
     };   
     
     letra = getchar();
@@ -114,8 +120,17 @@ token scanner()
                     buffer[i] = letra;
                     i++;
                 }
+
+                /*Si no estoy en estado aceptor, es decir, si estoy "limpiando"
+                los caracteres de nueva línea, entonces los cuento para saber
+                en que linea del archivo estoy.
+                Esto va a ocurrir si el estado es 0, es decir, cuando empiezo
+                a "comerme" los espacios y nuevas lineas.*/
+                if(letra == '\n')
+                {
+                    numeroLinea++;
+                }
             }
-            
             /*Leo el proximo caracter.*/
             letra = getchar();
 	}
@@ -149,6 +164,7 @@ int esAceptor(int estado)
         case 18:
         case 20:
         case 21:
+        case 23:
             return 1;
             break;
         default:
@@ -196,7 +212,7 @@ int columna(char letra)
     return 12;
 }
 
-/*Informa si la palabra pasada por parametro es una palabra reservada.*/
+/*Informa si la palabra pasada almacenada en el buffer es una palabra reservada.*/
 token verificarPalabraReservada()
 {
     
@@ -246,7 +262,8 @@ token tokenCorrespondiente(int estado)
     if(estado == 20)    return COMENTARIO;
     
     if(estado == 21)    return ERRORASIG;
-
+    
+    if(estado == 23)    return ERRORCTE;
 }
 
 /*Verifica si dos lexemas son iguales.*/
