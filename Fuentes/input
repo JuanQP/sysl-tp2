@@ -1,7 +1,22 @@
+//Ejemplos de lexemas funcionando bien.
 suma := (2 + 3) + 5;
 sumaMasGrande := suma + 100;
 unaResta := suma - 50;
 
+//Lexema que deberia dar error lexico.
+#algunawea;
+hol@ := a + b
+41suma;
 
+//Identificadores pegados a los operadores.
+variable:=((a+b)*3)/4;
 
+//Probamos multiplicacion y division.
+multip := 3 * 2;
+division := suma / multip;
+
+//Ahora probamos un error de asignacion.
+malaAsig : a + b;
+
+//Un identificador con numeros.
 idConNumeros123 := ((2+3) - 1);

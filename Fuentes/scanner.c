@@ -28,23 +28,30 @@ token scanner()
     char letra = '\0';
     
     /*Defino la tabla de transición (Leer documentación).*/
-    int tablaTransicion[15][13] = 
+    int tablaTransicion[22][16] = 
     {
-    { 1, 3, 5, 6, 7, 8, 9,10,11,14,13, 0,14},
-    { 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-    {99,99,99,99,99,99,99,99,99,99,99,99,99},
-    { 4, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4},
-    {99,99,99,99,99,99,99,99,99,99,99,99,99},
-    {99,99,99,99,99,99,99,99,99,99,99,99,99},
-    {99,99,99,99,99,99,99,99,99,99,99,99,99},
-    {99,99,99,99,99,99,99,99,99,99,99,99,99},
-    {99,99,99,99,99,99,99,99,99,99,99,99,99},
-    {99,99,99,99,99,99,99,99,99,99,99,99,99},
-    {99,99,99,99,99,99,99,99,99,99,99,99,99},
-    {14,14,14,14,14,14,14,14,14,12,14,14,14},
-    {99,99,99,99,99,99,99,99,99,99,99,99,99},
-    {99,99,99,99,99,99,99,99,99,99,99,99,99},
-    {99,99,99,99,99,99,99,99,99,99,99,99,99}
+    { 1, 3, 5, 6, 7, 8, 9,10,11,14,13, 0,14,16,17, 0},/*0: Inicio.*/
+    { 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,14, 2, 2, 2},/*1: Reconociendo identificador.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*2: Identificador reconocido.*/
+    {14, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,14, 4, 4, 4},/*3: Reconociendo constante.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*4: Constante reconocida.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*5: Operador suma.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*6: Operador resta.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*7: Paréntesis izquierdo.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*8: Paréntesis derecho.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*9: Coma.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*10: Punto y coma.*/
+    {21,21,21,21,21,21,21,21,21,12,21,21,21,21,21,21},/*11: Reconociendo operador asignación.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*12: Operador asignación reconocido.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*13: Fin de texto.*/
+    {14,14,14,14,14,14,14,14,14,14,15,15,14,14,14,15},/*14: Está reconociendo un error léxico. Sale por FDT, espacio o nueva linea.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*15: Error léxico reconocido.*/ 
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*16: Operador multiplicativo.*/
+    {18,18,18,18,18,18,18,18,18,18,18,18,14,18,19,18},/*17: Barra puede ser comentario o division.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*18: Operador division reconocido.*/
+    {19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,20},/*19: Reconociendo comentario (tiene //).*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*20: Comentario reconocido.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*21: Error de asignación.*/
     };   
     
     letra = getchar();
@@ -70,7 +77,9 @@ token scanner()
             con el caracter si es uno compuesto como := */
 	    else
 	    {
-                /*Si la letra recien leida es = significa que es estado aceptor de := */
+                /*Si la letra recien leida es = o / significa que puede ser un lexema
+                compuesto. Por lo tanto, voy a agregar dicho caracter y no lo voy
+                a devolver.*/
 	        if(letra == '=')
                 {
                     buffer[i] = letra;
@@ -94,6 +103,15 @@ token scanner()
 	        buffer[i] = letra;
 		i++;
 	    }
+            else
+            {
+                /*Si estoy reconociendo un comentario, acepto espacios.*/
+                if(estado == 19 && letra == ' ')
+                {
+                    buffer[i] = letra;
+                    i++;
+                }
+            }
             
             /*Leo el proximo caracter.*/
             letra = getchar();
@@ -123,6 +141,11 @@ int esAceptor(int estado)
         case 10:
         case 12:
         case 13:
+        case 15:
+        case 16:
+        case 18:
+        case 20:
+        case 21:
             return 1;
             break;
         default:
@@ -158,8 +181,14 @@ int columna(char letra)
     
     if(letra == EOF)    return 10;
 
-    if(letra == ' ' || letra == '\n')    return 11;
+    if(letra == ' ')    return 11;
+    
+    if(letra == '*')    return 13;
+    
+    if(letra == '/')    return 14;
 
+    if(letra == '\n')   return 15;
+    
     /*Si llego hasta aca es porque es "cualquier otra cosa".*/
     return 12;
 }
@@ -194,4 +223,15 @@ token tokenCorrespondiente(int estado)
     if(estado == 12)	return ASIGNACION;
 	
     if(estado == 13)	return FDT;
+
+    if(estado == 15)    return ERRORLEXICO;
+
+    if(estado == 16)    return MULTIPLICACION;
+
+    if(estado == 18)    return DIVISION;
+
+    if(estado == 20)    return COMENTARIO;
+    
+    if(estado == 21)    return ERRORASIG;
+
 }
