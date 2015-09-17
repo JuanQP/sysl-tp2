@@ -32,6 +32,22 @@ El [capítulo 8][2] (hasta la hoja 17 inclusive) es necesario para entender el c
 |asignacion| := |
 |caracterPuntuacion| **uno de** ( ) , ;|
 
+### Como ejecutar el programa
+
+En Linux
+
+Hay que bajar el proyecto, luego entrar en la carpeta Fuentes. Y desde la terminal hacer lo siguiente:
+
+```bash
+[juan Fuentes]$ gcc -ansi -o Compilador main.c scanner.c
+[juan Fuentes]$ ./Compilador < input
+```
+
+La primer línea compila `main.c` y `scanner.c`.
+La segunda línea ejecuta la aplicación con `./Compilador` y luego le pasa lo que tiene el archivo "input" dentro.
+
+Se puede modificar el archivo "input" o crear otro archivo para escribirle otro código y probar el compilador.
+
 [1]: https://www.dropbox.com/sh/nr1zia5bz1tgdu0/AAAbIArF7-gDmO9FcUCuqv3Da/Apuntes%20y%20Ejercicios/03-SintaxisBNF.pdf?dl=0
 [2]: https://www.dropbox.com/sh/nr1zia5bz1tgdu0/AADuFldyjY-BjwPTU7A9VU9pa/Apuntes%20y%20Ejercicios/08-ProcesoCompilaci%C3%B3n.pdf?dl=0
 [3]: http://ur1.ca/h9w5u
