@@ -36,10 +36,11 @@ El [capítulo 8][2] (hasta la hoja 17 inclusive) es necesario para entender el c
 
 En Linux
 
-Hay que bajar el proyecto, luego entrar en la carpeta Fuentes. Y desde la terminal hacer lo siguiente:
+Hay que bajar el proyecto, luego entrar en la carpeta Fuentes. Primero hay que hacer el makefile que se va a encargar de compilar los
+fuentes que son necesarios y generar el ejecutable. Desde la terminal hacer lo siguiente:
 
 ```bash
-[juan Fuentes]$ gcc -ansi -o Compilador main.c scanner.c
+[juan Fuentes]$ make
 [juan Fuentes]$ ./Compilador < input
 ```
 
