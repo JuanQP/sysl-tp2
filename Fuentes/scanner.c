@@ -3,9 +3,43 @@
 #include <ctype.h>
 #include <string.h>
 
+/*Variables*/
 static char buffer[100];
 char *const yytext = buffer;
 int numeroLinea = 1;
+
+/*Defino la Tabla de Transicion como static para que solo sea visible en este fuente.
+Para entender el funcionamiento de la tabla de transicion, es necesario leer la documentacion.*/
+static int tablaTransicion[24][16] =
+    {
+    { 1, 3, 5, 6, 7, 8, 9,10,11,14,13, 0,14,16,17, 0},/*0: Inicio.*/
+    { 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,14, 2, 2, 2},/*1: Reconociendo identificador.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*2: Identificador reconocido.*/
+    {22, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,22, 4, 4, 4},/*3: Reconociendo constante.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*4: Constante reconocida.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*5: Operador suma.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*6: Operador resta.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*7: Paréntesis izquierdo.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*8: Paréntesis derecho.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*9: Coma.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*10: Punto y coma.*/
+    {21,21,21,21,21,21,21,21,21,12,21,21,21,21,21,21},/*11: Reconociendo operador asignación.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*12: Operador asignación reconocido.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*13: Fin de texto.*/
+    {14,14,14,14,14,14,14,14,14,14,15,15,14,14,14,15},/*14: Está reconociendo un error léxico. Sale por FDT, espacio o nueva linea.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*15: Error léxico reconocido.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*16: Operador multiplicativo.*/
+    {18,18,18,18,18,18,18,18,18,18,18,18,14,18,19,18},/*17: Barra puede ser comentario o division.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*18: Operador division reconocido.*/
+    {19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,20},/*19: Reconociendo comentario (tiene //).*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*20: Comentario reconocido.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*21: Error de asignación.*/
+    {22,22,23,23,23,23,23,23,23,23,23,23,22,23,23,23},/*22: Reconociendo error de Constante.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99} /*23: Error de Constante reconocido.*/
+    };
+
+/*Prototipos de funcion*/
+int requiereCentinela(int);
 int columna(char);
 int esAceptor(int);
 token tokenCorrespondiente(int);
@@ -34,114 +68,78 @@ token scanner()
     /*La letra actualmente siendo scaneada.*/
     char letra = '\0';
     
-    /*Defino la tabla de transición (Leer documentación).*/
-    int tablaTransicion[24][16] = 
-    {
-    { 1, 3, 5, 6, 7, 8, 9,10,11,14,13, 0,14,16,17, 0},/*0: Inicio.*/
-    { 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,14, 2, 2, 2},/*1: Reconociendo identificador.*/
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*2: Identificador reconocido.*/
-    {22, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,22, 4, 4, 4},/*3: Reconociendo constante.*/
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*4: Constante reconocida.*/
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*5: Operador suma.*/
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*6: Operador resta.*/
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*7: Paréntesis izquierdo.*/
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*8: Paréntesis derecho.*/
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*9: Coma.*/
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*10: Punto y coma.*/
-    {21,21,21,21,21,21,21,21,21,12,21,21,21,21,21,21},/*11: Reconociendo operador asignación.*/
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*12: Operador asignación reconocido.*/
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*13: Fin de texto.*/
-    {14,14,14,14,14,14,14,14,14,14,15,15,14,14,14,15},/*14: Está reconociendo un error léxico. Sale por FDT, espacio o nueva linea.*/
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*15: Error léxico reconocido.*/ 
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*16: Operador multiplicativo.*/
-    {18,18,18,18,18,18,18,18,18,18,18,18,14,18,19,18},/*17: Barra puede ser comentario o division.*/
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*18: Operador division reconocido.*/
-    {19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,20},/*19: Reconociendo comentario (tiene //).*/
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*20: Comentario reconocido.*/
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*21: Error de asignación.*/
-    {22,22,23,23,23,23,23,23,23,23,23,23,22,23,23,23},/*22: Reconociendo error de Constante.*/
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99} /*23: Error de Constante reconocido.*/
-    };   
-    
+    /*Obtengo la primer letra.*/
     letra = getchar();
+    
     /*Mientras no estè en estado aceptor.*/
     while(!esAceptor(estado))
     {
-	/*Consulto cual es el proximo estado.*/
+        /*Verifico cual va a ser el proximo estado.*/
         proximoEstado = tablaTransicion[estado][columna(letra)];
         
-	/*El proximo estado es aceptor.*/
-	if (esAceptor(proximoEstado))
+        /*Si estoy en estado inicial, empiezo a contar las "nueva linea".
+        Los espacios los ignoro.*/
+        if(estado == 0 && (letra == '\n' || letra == ' '))
         {
-	    /*Si estaba en el estado 0, significa que va a reconocer un lexema de 1 caracter.
-	    Por lo tanto, el caracter recien leido es el lexema.*/
-	    if(estado == 0)
-	    {
-		buffer[i] = letra;
-                i++;
-	    }
-	    /*Si no estaba en el estado 0, significa que estaba reconociendo un lexema
-	    que está compuesto por más de 1 caracter.
-            Puede ocurrir que tenga que devolver el centinela o que tenga que quedarse
-            con el caracter si es uno compuesto como := */
-	    else
-	    {
-                /*Si la letra recien leida es = o / significa que puede ser un lexema
-                compuesto. Por lo tanto, voy a agregar dicho caracter y no lo voy
-                a devolver.*/
-	        if(letra == '=')
-                {
-                    buffer[i] = letra;
-                    i++;
-		}
-                /*Caso contrario, es cualquier otro de los lexemas que necesitan un centinela,
-                y como acabo de leer un centinela, tengo que devolverlo.*/
-		else
-		{
-                    ungetc(letra, stdin);
-		}
-	    }
+            if(letra == '\n')
+            {
+                numeroLinea++;
+            }
+        }
+        /*Si no estoy en el estado inicial, agrego al lexema actual la letra scaneada.*/
+        else
+        {
+            buffer[i] = letra;
+            i++;
         }
 
-        /*El estado no es aceptor.*/
-        else
-	{
-	    /*Si no es un espacio o nueva línea, lo pongo en el string.*/
-	    if(letra != ' ' && letra != '\n')
-	    {
-	        buffer[i] = letra;
-		i++;
-	    }
-            else
-            {
-                /*Si estoy reconociendo un comentario, acepto espacios.*/
-                if(estado == 19 && letra == ' ')
-                {
-                    buffer[i] = letra;
-                    i++;
-                }
+        estado = proximoEstado;
 
-                /*Si no estoy en estado aceptor, es decir, si estoy "limpiando"
-                los caracteres de nueva línea, entonces los cuento para saber
-                en que linea del archivo estoy.
-                Esto va a ocurrir si el estado es 0, es decir, cuando empiezo
-                a "comerme" los espacios y nuevas lineas.*/
-                if(letra == '\n')
-                {
-                    numeroLinea++;
-                }
-            }
-            /*Leo el proximo caracter.*/
-            letra = getchar();
-	}
-
-        /*Asigno el estado en el que se encuentra. Si es aceptor, deja de iterar.*/
-	estado = proximoEstado;
+        /*Si estoy en un lexema que requiere centinela, al reconocerlo me voy inmediatamente
+        del while, ya que significa que la letra actual tiene que ser devuelta..*/
+        if(esAceptor(estado) && requiereCentinela(estado))
+        {
+            break;
+        }
+        
+        letra = getchar();
+    }
+    /*Si el lexema requeria centinela, significa que el ultimo caracter leido no forma parte
+    del lexema. Asi que decremento el indice para pisar esa ultima letra leida con un '\0'*/
+    if(requiereCentinela(estado))
+    {
+        i--;
     }
 
-    /*Pongo el fin de línea en el lexema.*/
-    buffer[i]='\0';
+    /*Devuelvo la ultima letra leida..*/
+    ungetc(letra, stdin);
+    /*En la ultima posicion pongo el fin de linea.*/
+    buffer[i] = '\0';
+
     return tokenCorrespondiente(estado);
+}
+
+/*Algunos lexemas requieren centinela. Estos lexemas en particular salen del While llevandose
+una letra "de mas" (el centinela). En estos casos necesito devolver ese ultimo caracter,
+por eso necesito saber que estados requieren centinela.*/
+int requiereCentinela(int estado)
+{
+    switch(estado)
+    {
+        case 2:     /*Identificador.*/
+        case 4:     /*Constante.*/
+        case 15:    /*Error lexico.*/
+        case 20:    /*Comentario.*/
+        case 23:    /*Error de constante.*/
+            return 1;
+            break;
+        default:
+            break;
+    }
+
+    /*Si no es ninguno de los casos mencionados entonces,
+    entonces no es un lexema que requiera centinela.*/
+    return 0;
 }
 
 /*Informa si el estado pasado por parametro es estado aceptor.*/
