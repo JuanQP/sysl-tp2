@@ -42,8 +42,8 @@ int main()
 /*Imprime un bonito encabezado al principio del programa :v*/
 void encabezado()
 {
-    puts("*******************************************************");
-    puts("*Sintaxis y Semantica de Lenguajes - UTN K2055 Grupo 3*");
-    puts("*     COMPILADOR DE LENGUAJE MICRO - Scanner          *");
-    puts("*******************************************************");
+    puts("┌─────────────────────────────────────────────────────┐");
+    puts("│Sintaxis y Semantica de Lenguajes - UTN K2055 Grupo 4│");
+    puts("│     COMPILADOR DE LENGUAJE MICRO - Scanner          │");
+    puts("└─────────────────────────────────────────────────────┘");
 }

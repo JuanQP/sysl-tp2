@@ -3,9 +3,42 @@
 #include <ctype.h>
 #include <string.h>
 
+/*Variables*/
 static char buffer[100];
 char *const yytext = buffer;
 int numeroLinea = 1;
+
+/*Defino la Tabla de Transicion como static para que solo sea visible en este fuente.
+Para entender el funcionamiento de la tabla de transicion, es necesario leer la documentacion.*/
+static int tablaTransicion[24][16] =
+    {
+    { 1, 3, 5, 6, 7, 8, 9,10,11,14,13, 0,14,16,17, 0},/*0: Inicio.*/
+    { 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,14, 2, 2, 2},/*1: Reconociendo identificador.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*2: Identificador reconocido.*/
+    {22, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,22, 4, 4, 4},/*3: Reconociendo constante.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*4: Constante reconocida.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*5: Operador suma.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*6: Operador resta.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*7: Paréntesis izquierdo.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*8: Paréntesis derecho.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*9: Coma.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*10: Punto y coma.*/
+    {21,21,21,21,21,21,21,21,21,12,21,21,21,21,21,21},/*11: Reconociendo operador asignación.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*12: Operador asignación reconocido.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*13: Fin de texto.*/
+    {14,14,14,14,14,14,14,14,14,14,15,15,14,14,14,15},/*14: Está reconociendo un error léxico. Sale por FDT, espacio o nueva linea.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*15: Error léxico reconocido.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*16: Operador multiplicativo.*/
+    {18,18,18,18,18,18,18,18,18,18,18,18,14,18,19,18},/*17: Barra puede ser comentario o division.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*18: Operador division reconocido.*/
+    {19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,20},/*19: Reconociendo comentario (tiene //).*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*20: Comentario reconocido.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*21: Error de asignación.*/
+    {22,22,23,23,23,23,23,23,23,23,23,23,22,23,23,23},/*22: Reconociendo error de Constante.*/
+    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99} /*23: Error de Constante reconocido.*/
+    };
+
+/*Prototipos de funcion*/
 int columna(char);
 int esAceptor(int);
 token tokenCorrespondiente(int);
@@ -33,35 +66,6 @@ token scanner()
 
     /*La letra actualmente siendo scaneada.*/
     char letra = '\0';
-    
-    /*Defino la tabla de transición (Leer documentación).*/
-    int tablaTransicion[24][16] = 
-    {
-    { 1, 3, 5, 6, 7, 8, 9,10,11,14,13, 0,14,16,17, 0},/*0: Inicio.*/
-    { 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,14, 2, 2, 2},/*1: Reconociendo identificador.*/
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*2: Identificador reconocido.*/
-    {22, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,22, 4, 4, 4},/*3: Reconociendo constante.*/
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*4: Constante reconocida.*/
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*5: Operador suma.*/
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*6: Operador resta.*/
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*7: Paréntesis izquierdo.*/
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*8: Paréntesis derecho.*/
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*9: Coma.*/
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*10: Punto y coma.*/
-    {21,21,21,21,21,21,21,21,21,12,21,21,21,21,21,21},/*11: Reconociendo operador asignación.*/
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*12: Operador asignación reconocido.*/
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*13: Fin de texto.*/
-    {14,14,14,14,14,14,14,14,14,14,15,15,14,14,14,15},/*14: Está reconociendo un error léxico. Sale por FDT, espacio o nueva linea.*/
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*15: Error léxico reconocido.*/ 
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*16: Operador multiplicativo.*/
-    {18,18,18,18,18,18,18,18,18,18,18,18,14,18,19,18},/*17: Barra puede ser comentario o division.*/
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*18: Operador division reconocido.*/
-    {19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,20},/*19: Reconociendo comentario (tiene //).*/
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*20: Comentario reconocido.*/
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99},/*21: Error de asignación.*/
-    {22,22,23,23,23,23,23,23,23,23,23,23,22,23,23,23},/*22: Reconociendo error de Constante.*/
-    {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99} /*23: Error de Constante reconocido.*/
-    };   
     
     letra = getchar();
     /*Mientras no estè en estado aceptor.*/
