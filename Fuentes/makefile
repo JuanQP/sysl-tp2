@@ -1,4 +1,4 @@
-#Borra los archivos object generados por la compilacion del proyecto.
+#Espera que este listo el ejecutable del compilador.
 all: Compilador
 
 #Compila los objetos main y scanner para crear el ejecutable Compilador

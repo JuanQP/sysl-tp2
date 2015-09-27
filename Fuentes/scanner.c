@@ -39,6 +39,7 @@ static int tablaTransicion[24][16] =
     };
 
 /*Prototipos de funcion*/
+int requiereCentinela(int);
 int columna(char);
 int esAceptor(int);
 token tokenCorrespondiente(int);
@@ -67,85 +68,75 @@ token scanner()
     /*La letra actualmente siendo scaneada.*/
     char letra = '\0';
     
+    /*Obtengo la primer letra.*/
     letra = getchar();
+    
     /*Mientras no estè en estado aceptor.*/
     while(!esAceptor(estado))
     {
-	/*Consulto cual es el proximo estado.*/
+        /*Verifico cual va a ser el proximo estado.*/
         proximoEstado = tablaTransicion[estado][columna(letra)];
         
-	/*El proximo estado es aceptor.*/
-	if (esAceptor(proximoEstado))
+        /*Si estoy en estado inicial, empiezo a contar las "nueva linea".
+        Los espacios los ignoro.*/
+        if(estado == 0 && (letra == '\n' || letra == ' '))
         {
-	    /*Si estaba en el estado 0, significa que va a reconocer un lexema de 1 caracter.
-	    Por lo tanto, el caracter recien leido es el lexema.*/
-	    if(estado == 0)
-	    {
-		buffer[i] = letra;
-                i++;
-	    }
-	    /*Si no estaba en el estado 0, significa que estaba reconociendo un lexema
-	    que está compuesto por más de 1 caracter.
-            Puede ocurrir que tenga que devolver el centinela o que tenga que quedarse
-            con el caracter si es uno compuesto como := */
-	    else
-	    {
-                /*Si la letra recien leida es = o / significa que puede ser un lexema
-                compuesto. Por lo tanto, voy a agregar dicho caracter y no lo voy
-                a devolver.*/
-	        if(letra == '=')
-                {
-                    buffer[i] = letra;
-                    i++;
-		}
-                /*Caso contrario, es cualquier otro de los lexemas que necesitan un centinela,
-                y como acabo de leer un centinela, tengo que devolverlo.*/
-		else
-		{
-                    ungetc(letra, stdin);
-		}
-	    }
+            if(letra == '\n')
+            {
+                numeroLinea++;
+            }
+        }
+        /*Si no estoy en el estado inicial, agrego al lexema actual la letra scaneada.*/
+        else
+        {
+            buffer[i] = letra;
+            i++;
         }
 
-        /*El estado no es aceptor.*/
-        else
-	{
-	    /*Si no es un espacio o nueva línea, lo pongo en el string.*/
-	    if(letra != ' ' && letra != '\n')
-	    {
-	        buffer[i] = letra;
-		i++;
-	    }
-            else
-            {
-                /*Si estoy reconociendo un comentario, acepto espacios.*/
-                if(estado == 19 && letra == ' ')
-                {
-                    buffer[i] = letra;
-                    i++;
-                }
+        estado = proximoEstado;
 
-                /*Si no estoy en estado aceptor, es decir, si estoy "limpiando"
-                los caracteres de nueva línea, entonces los cuento para saber
-                en que linea del archivo estoy.
-                Esto va a ocurrir si el estado es 0, es decir, cuando empiezo
-                a "comerme" los espacios y nuevas lineas.*/
-                if(letra == '\n')
-                {
-                    numeroLinea++;
-                }
-            }
-            /*Leo el proximo caracter.*/
-            letra = getchar();
-	}
-
-        /*Asigno el estado en el que se encuentra. Si es aceptor, deja de iterar.*/
-	estado = proximoEstado;
+        /*Si estoy en un lexema que requiere centinela, al reconocerlo me voy inmediatamente
+        del while, ya que significa que la letra actual tiene que ser devuelta..*/
+        if(esAceptor(estado) && requiereCentinela(estado))
+        {
+            break;
+        }
+        
+        letra = getchar();
+    }
+    /*Si el lexema requeria centinela, significa que el ultimo caracter leido no forma parte
+    del lexema. Asi que decremento el indice para pisar esa ultima letra leida con un '\0'*/
+    if(requiereCentinela(estado))
+    {
+        i--;
     }
 
-    /*Pongo el fin de línea en el lexema.*/
-    buffer[i]='\0';
+    /*Devuelvo la ultima letra leida..*/
+    ungetc(letra, stdin);
+    /*En la ultima posicion pongo el fin de linea.*/
+    buffer[i] = '\0';
+
     return tokenCorrespondiente(estado);
+}
+
+/*Algunos lexemas requieren centinela. Estos lexemas en particular salen del While llevandose
+una letra "de mas" (el centinela). En estos casos necesito devolver ese ultimo caracter,
+por eso necesito saber que estados requieren centinela.*/
+int requiereCentinela(int estado)
+{
+    switch(estado)
+    {
+        case 2:
+        case 4:
+        case 15:
+        case 20:
+        case 23:
+            return 1;
+            break;
+        default:
+            break;
+    }
+    return 0;
 }
 
 /*Informa si el estado pasado por parametro es estado aceptor.*/
