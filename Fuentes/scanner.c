@@ -126,16 +126,19 @@ int requiereCentinela(int estado)
 {
     switch(estado)
     {
-        case 2:
-        case 4:
-        case 15:
-        case 20:
-        case 23:
+        case 2:     /*Identificador.*/
+        case 4:     /*Constante.*/
+        case 15:    /*Error lexico.*/
+        case 20:    /*Comentario.*/
+        case 23:    /*Error de constante.*/
             return 1;
             break;
         default:
             break;
     }
+
+    /*Si no es ninguno de los casos mencionados entonces,
+    entonces no es un lexema que requiera centinela.*/
     return 0;
 }
 
