@@ -35,6 +35,8 @@ int main()
     }
 
     printf("\n[Scanner]: Trabajo terminado.\n");
+
+    return 0;
 }
 
 /*Imprime un bonito encabezado al principio del programa :v*/
