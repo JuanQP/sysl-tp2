@@ -1,0 +1,6 @@
+before_script:
+  - make -C Fuentes/
+
+rspec:
+  script:
+    - ./Fuentes/Compilador < Fuentes/input
