@@ -1,12 +1,30 @@
 #include <stdio.h>
 #include "scanner.h"
-#include <ctype.h>
-#include <string.h>
+#include "parser.h"
+#include "error.h"
+
+/*nombresToken está como extern en scanner.h, por lo tanto es una variable global.*/
+char *nombresToken[20] = {"PalabraReservada INICIO","PalabraReservada FIN","PalabraReservada LEER","PalabraReservada ESCRIBIR",
+    "Identificador","Constante","ParentesisIzquierdo","ParentesisDerecho",
+    "PuntoYComa", "Coma", "Asignacion", "Suma",
+    "Resta", "Multiplicacion", "Division", "Comentario",
+    "EOF", "ErrorLexico", "ErrorAsignacion", "ErrorDeConstante"};
+
+/*Prototipos de funcion*/
+int requiereCentinela(int);
+int columna(char);
+int esAceptor(int);
+token tokenCorrespondiente(int);
+int sonIguales(char*, char*);
+token verificarPalabraReservada();
+int esErrorLexico(token);
 
 /*Variables*/
 static char buffer[100];
 char *const yytext = buffer;
 int numeroLinea = 1;
+token tokenActual;
+int tokenEnBuffer = 0;
 
 /*Defino la Tabla de Transicion como static para que solo sea visible en este fuente.
 Para entender el funcionamiento de la tabla de transicion, es necesario leer la documentacion.*/
@@ -38,26 +56,82 @@ static int tablaTransicion[24][16] =
     {99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99} /*23: Error de Constante reconocido.*/
     };
 
-/*Prototipos de funcion*/
-int requiereCentinela(int);
-int columna(char);
-int esAceptor(int);
-token tokenCorrespondiente(int);
-int sonIguales(char*, char*);
-token verificarPalabraReservada();
-
-token prox_token()
+/*Obtiene el proximo token y lo devuelve.*/
+token proximoToken()
 {
-    /*Codigo de prox_token.
-    PARA LA SEGUNDA ENTREGA.*/
+    /*Si no estoy un token por delante de match(), me fijo cuál es el próximo token.*/
+    if(!tokenEnBuffer)
+    {
+        /*Pido el próximo token.*/
+        tokenActual = scanner();
+        
+        /*Si el scanner devolvió un comentario, o un error léxico lo informo.*/
+        while(tokenActual == COMENTARIO || esErrorLexico(tokenActual))
+        {
+            if(tokenActual == COMENTARIO)
+            {
+                printf("%2d-\e[1;36m[INFO ]\e[0m: Se encontro un token \e[0;33m%s\e[0m.\n", numeroLinea, nombresToken[tokenActual]);
+            }
+            else
+            {
+                /*Llamo a errorLexico.*/
+                errorLexico(tokenActual);
+            }
+            /*Pido el próximo token, ya que ni los comentarios ni los errores léxicos los tengo en cuenta.*/
+            tokenActual = scanner();
+        }
+        
+        /*Dejo anotado que estoy un token por delante de match().*/
+        tokenEnBuffer = 1;
+    }
+
+    /*Devuelvo el token. Si ya estaba un token por adelantado, no voy a pedir otro token más al scanner, devuelvo
+    simplemente el token que tenía.*/
+    return tokenActual;
 }
 
-void match(token tok)
+/*Informo qué error léxico se encontró.*/
+void errorLexico(token tok)
 {
-    /*Codigo que permita hacer match.
-    PARA LA SEGUNDA ENTREGA.*/
+    printf("%2d-\e[1;31m[ERROR]\e[0m: El scanner informa el token \e[1;31m%s\e[0m\n", numeroLinea, nombresToken[tok]);
 }
 
+/*Informa si un token es error léxico.*/
+int esErrorLexico(token tokenAVerificar)
+{
+    switch(tokenAVerificar)
+    {
+        case ERRORCTE:
+        case ERRORASIG:
+        case ERRORLEXICO:
+            return 1;
+            break;
+        default:
+            return 0;
+    }
+}
+
+/*Informa si el token esperado coincide con el token escaneado por scanner().*/
+void match(token tokenEsperado)
+{
+    /*Pido el próximo token.*/
+    token tokenObtenido = proximoToken();
+
+    /*Dejo anotado que ya agarré el token que estaba esperando ser procesado por match().*/
+    tokenEnBuffer = 0;
+    
+    /*Si el token obtenido por el scanner es el que esperaba, informo que está todo bien.*/
+    if(tokenObtenido == tokenEsperado)
+    {
+        printf("%2d-\e[1;32m[ OK  ]\e[0m: Token correcto (%s).\n", numeroLinea, nombresToken[tokenEsperado]);
+    }
+    else
+    {
+        printf("%2d-\e[1;31m[ERROR]\e[0m: Se esperaba el token \e[1;32m%s\e[0m pero se obtuvo \e[1;31m%s\e[0m.\n", numeroLinea, nombresToken[tokenEsperado], nombresToken[tokenObtenido]);
+    }
+}
+
+/*Avanza el scanner obteniendo caracter por caracter hasta que reconoce un lexema y un token.*/
 token scanner()
 {
     /*Indice para iterar en el buffer.*/
@@ -129,6 +203,7 @@ int requiereCentinela(int estado)
         case 2:     /*Identificador.*/
         case 4:     /*Constante.*/
         case 15:    /*Error lexico.*/
+        case 18:    /*La división requiere centinela.*/
         case 20:    /*Comentario.*/
         case 23:    /*Error de constante.*/
             return 1;

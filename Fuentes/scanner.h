@@ -11,16 +11,18 @@ typedef enum { INICIO, FIN, LEER, ESCRIBIR, ID, CONSTANTE, PARENIZQUIERDO,
 extern char * const yytext;
 
 /*Guarda los nombres de los tokens en string.*/
-extern char *tok_names[];
+extern char *nombresToken[];
 
 /*Informa el número de línea del archivo siendo scaneado.*/
 extern int numeroLinea;
-token prox_token(void);
-void match(token tok);
 
-/*Para poder utilizar el scanner sin necesidad de usar MATCH,
-definimos publicamente el scanner aca, asi lo podemos
-llamar desde main.c*/
-token scanner(void);
+/*Token actual*/
+extern token tokenActual;
+
+/*Me devuelve el próximo token a ser scanneado.*/
+token proximoToken(void);
+
+/*Verifica que el token devuelto por el scanner coincida con el token que se esperaba.*/
+void match(token tok);
 
 #endif
