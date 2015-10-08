@@ -1,30 +1,25 @@
 inicio
-//Ejemplos de lexemas funcionando bien.
-suma := (2 + 3) + 5;
-sumaMasGrande := suma + 100;
-unaResta := suma - 50;
+@
+123abl
+//Variables sencillas.
+variableConstante := 5;
+variableConExpresion := 1 + 2;
+variableParentesis := (1 - 3);
+variableParentesisCompleja := 5 + (1 - 2) + (6-1);
+variableConOtrasVariables := variableConstante + variableConExpresion;
+variableParentesisVariables := (variableConstante - variableParentesis) + variableParentesisCompleja;
 
-//Lexema que deberia dar error lexico.
-#algunawea;
-hol@ := a + b
-leer(#asd);
-malNumero := 123asd456;
+//Variables que utilizan operadores multiplicativos.
+variableMultiplicacion := ((3*2) + 3) * 10;
+variableDivision := (((3/3) - 5) /1) / 10;
+prueba := 5 + 3 * 5;
 
-//Identificadores pegados a los operadores.
-variable:=((a+b)*3)/4;
+//Prueba sencilla de leer y escribir.
+leer(a);
+escribir(b);
 
-//Probamos multiplicacion y division.
-multip := 3 * 2;
-division := suma / multip;
+//Prueba mas completa de leer y escribir.
+leer(variableConstante, a);
+escribir(variableParentesis, 5, (1-1)); //Comentario en linea.
 
-//Ahora probamos un error de asignacion.
-malaAsig : a + b;
-
-//Un identificador con numeros.
-idConNumeros123 := ((2+3) - 1);
-
-//Probamos con leer y escribir.
-leer(num1, num2, num3, num4);
-sumatoria := num1 + num2 + num3 + num4;
-escribir(sumatoria);
 fin
