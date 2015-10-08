@@ -177,5 +177,5 @@ void operadorMultiplicativo()
 /*Informa la existencia de un error sintáctico (se obtuvo un token que no se esperaba).*/
 void errorSintactico(token tokenObtenido)
 {
-    printf("%2d-\e[1;31m[ERROR]\e[0m: No se esperaba el token \e[1;31m%s\e[0m.\n", numeroLinea, nombresToken[tokenObtenido]);
+    printf("%2d-\e[1;31m[X]\e[0m: No se esperaba el token \e[1;31m%s\e[0m.\n", numeroLinea, nombresToken[tokenObtenido]);
 }

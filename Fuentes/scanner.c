@@ -18,6 +18,7 @@ token tokenCorrespondiente(int);
 int sonIguales(char*, char*);
 token verificarPalabraReservada();
 int esErrorLexico(token);
+token scanner();
 
 /*Variables*/
 static char buffer[100];
@@ -70,7 +71,7 @@ token proximoToken()
         {
             if(tokenActual == COMENTARIO)
             {
-                printf("%2d-\e[1;36m[INFO ]\e[0m: Se encontro un token \e[0;33m%s\e[0m.\n", numeroLinea, nombresToken[tokenActual]);
+                printf("%2d-\e[1;33m[!]\e[0m: El token \e[0;33m%s\e[0m va a ser salteado.\n", numeroLinea, nombresToken[tokenActual]);
             }
             else
             {
@@ -93,7 +94,7 @@ token proximoToken()
 /*Informo qué error léxico se encontró.*/
 void errorLexico(token tok)
 {
-    printf("%2d-\e[1;31m[ERROR]\e[0m: El scanner informa el token \e[1;31m%s\e[0m\n", numeroLinea, nombresToken[tok]);
+    printf("%2d-\e[1;31m[X]\e[0m: El token \e[1;31m%s\e[0m va a ser salteado.\n", numeroLinea, nombresToken[tok]);
 }
 
 /*Informa si un token es error léxico.*/
@@ -123,11 +124,11 @@ void match(token tokenEsperado)
     /*Si el token obtenido por el scanner es el que esperaba, informo que está todo bien.*/
     if(tokenObtenido == tokenEsperado)
     {
-        printf("%2d-\e[1;32m[ OK  ]\e[0m: Token correcto (%s).\n", numeroLinea, nombresToken[tokenEsperado]);
+        printf("%2d-\e[1;32m[√]\e[0m: Token correcto (%s).\n", numeroLinea, nombresToken[tokenEsperado]);
     }
     else
     {
-        printf("%2d-\e[1;31m[ERROR]\e[0m: Se esperaba el token \e[1;32m%s\e[0m pero se obtuvo \e[1;31m%s\e[0m.\n", numeroLinea, nombresToken[tokenEsperado], nombresToken[tokenObtenido]);
+        printf("%2d-\e[1;31m[X]\e[0m: Se esperaba el token \e[1;32m%s\e[0m pero se obtuvo \e[1;31m%s\e[0m.\n", numeroLinea, nombresToken[tokenEsperado], nombresToken[tokenObtenido]);
     }
 }
 
