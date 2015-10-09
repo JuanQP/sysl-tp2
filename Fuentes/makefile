@@ -6,8 +6,8 @@ test: Compilador
 	./Compilador < input
 
 #Compila los objetos main y scanner para crear el ejecutable Compilador
-Compilador: main.o scanner.o parser.o
-	gcc -o Compilador main.o scanner.o parser.o
+Compilador: main.o scanner.o parser.o error.o
+	gcc -o Compilador main.o scanner.o parser.o error.o
 
 #Genera el objeto main a partir del fuente main.c
 main.o: main.c
@@ -20,6 +20,10 @@ scanner.o: scanner.c scanner.h
 #Genera el objeto parser
 parser.o: parser.c parser.h
 	gcc -ansi -c parser.c
+
+#Genera el objeto error
+error.o: error.c error.h
+	gcc -ansi -c error.c
 
 #Borra los archivos object generados por la compilacion.
 clean:

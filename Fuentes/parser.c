@@ -47,7 +47,7 @@ void sentencia()
     switch (tokenProximo) 
     {
         case ID: /* <sentencia> -> ID := <expresion>; */
-            match(ID); 
+            identificador();
             match(ASIGNACION);
             expresion();
             match(PUNTOYCOMA);
@@ -74,11 +74,11 @@ void sentencia()
 
 void listaIdentificadores()
 {
-    match(ID);
+    identificador();
     while(proximoToken() == COMA)
     {
         match(COMA);
-        match(ID);
+        identificador();
     }
 }
 
@@ -100,7 +100,7 @@ void primaria()
     switch (tokenProximo) 
     {
         case ID:
-            match(ID);
+            identificador();
             break;
         case CONSTANTE:
             match(CONSTANTE);
@@ -125,6 +125,8 @@ void expresion ()
     {
         operadorAditivo();
         termino();
+        /*Acá debería ir la generación de código (y declaración de variables).
+        operandoIzq = generar(operandoIzq, operacion, operandoDerecho);*/
     }
 }
 
@@ -137,6 +139,8 @@ void termino()
     {
         operadorMultiplicativo();
         primaria();
+        /*Acá debería ir la geenración de código (y declaración de variables).
+        operandoIzq = generar(operandoIzq, operacion, operandoDerecho);*/
     }
 }
 
@@ -174,8 +178,10 @@ void operadorMultiplicativo()
     }
 }
 
-/*Informa la existencia de un error sintáctico (se obtuvo un token que no se esperaba).*/
-void errorSintactico(token tokenObtenido)
+/*<identificado> -> ID #procesar_ID*/
+void identificador()
 {
-    printf("%2d-\e[1;31m[ERROR]\e[0m: No se esperaba el token \e[1;31m%s\e[0m.\n", numeroLinea, nombresToken[tokenObtenido]);
+    token tokenProximo = proximoToken();
+    match(ID);
+    /*Debería ir acá la generación de código para declarar la variable.*/
 }
