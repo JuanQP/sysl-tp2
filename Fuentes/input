@@ -1,5 +1,5 @@
 inicio
-//123abl
+123abl
 //Variables sencillas.
 variableConstante := 5;
 variableConExpresion := 1 + 2;

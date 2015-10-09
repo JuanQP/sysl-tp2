@@ -91,12 +91,6 @@ token proximoToken()
     return tokenActual;
 }
 
-/*Informo qué error léxico se encontró.*/
-void errorLexico(token tok)
-{
-    printf("%2d-\e[1;31m[X]\e[0m: El token \e[1;31m%s\e[0m va a ser salteado.\n", numeroLinea, nombresToken[tok]);
-}
-
 /*Informa si un token es error léxico.*/
 int esErrorLexico(token tokenAVerificar)
 {
