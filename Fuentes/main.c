@@ -7,16 +7,22 @@ Curso: Viernes-Noche*/
 /*Definicion de prototipos.*/
 void encabezado();
 
+FILE* fuente;
+
 int main()
 {
     /*Imprimo el encabezado.*/
     encabezado();
     printf("[Scanner]: Reconociendo lexemas...\n\n");
     
+    /*Abro el archivo donde voy a escribir el fuente.*/
+    fuente = fopen("fuente.assembler", "w");
+    
     /*Llamo al analizador sintáctico.*/
     objetivo();
 
     printf("\n[Scanner]: Trabajo terminado.\n");
+    fclose(fuente);
     return 0;
 }
 

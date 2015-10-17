@@ -2,6 +2,8 @@
 #include "scanner.h"
 #include "parser.h"
 #include "error.h"
+#include "symbol.h"
+#include "semantic.h"
 
 /*nombresToken está como extern en scanner.h, por lo tanto es una variable global.*/
 char *nombresToken[20] = {"PalabraReservada INICIO","PalabraReservada FIN","PalabraReservada LEER","PalabraReservada ESCRIBIR",
@@ -15,7 +17,6 @@ int requiereCentinela(int);
 int columna(char);
 int esAceptor(int);
 token tokenCorrespondiente(int);
-int sonIguales(char*, char*);
 token verificarPalabraReservada();
 int esErrorLexico(token);
 token scanner();
@@ -88,6 +89,8 @@ token proximoToken()
 
     /*Devuelvo el token. Si ya estaba un token por adelantado, no voy a pedir otro token más al scanner, devuelvo
     simplemente el token que tenía.*/
+    /*Además, voy a buscarlo en el diccionario de simbolos para que lo corrija si es palabra reservada.*/
+    buscar(buffer, tabla_simb, &tokenActual);
     return tokenActual;
 }
 
@@ -119,6 +122,7 @@ void match(token tokenEsperado)
     if(tokenObtenido == tokenEsperado)
     {
         printf("%2d-\e[1;32m[√]\e[0m: Token correcto (%s).\n", numeroLinea, nombresToken[tokenEsperado]);
+        /*ProcesarID();*/
     }
     else
     {
@@ -298,10 +302,7 @@ se devuelve el token correspondiente a dicho estado final.*/
 token tokenCorrespondiente(int estado)
 {
     /*Es un identificador. Tenemos que ver si es palabra reservada.*/	
-    if(estado == 2)
-    {
-        return verificarPalabraReservada();
-    }
+    if(estado == 2) return ID;
     
     if(estado == 4)	return CONSTANTE;
     

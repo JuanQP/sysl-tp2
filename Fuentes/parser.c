@@ -3,14 +3,19 @@
 #include "parser.h"
 #include "scanner.h"
 #include "error.h"
+#include "semantic.h"
+#include "symbol.h"
 
 /*En este fuente están las implementaciones de todas las Producciones de Análisis Sintáctico.*/
 
-/*<objetivo> -> <programa> FDT*/
+/*<objetivo> -> <programa> FDT #terminar*/
 void objetivo()
 {
+    inicializarDiccionario();
+    comenzar();
     programa();
     match(FDT);
+    terminar();
 }
 
 /*<programa> -> INICIO <listaSentencias> FIN*/

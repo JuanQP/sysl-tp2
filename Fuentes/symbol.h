@@ -5,7 +5,7 @@
 #define TAMLEX 32+1
 
 struct ts_entry{
-	char lexema[TAMLEX];
+	char *lexema;
 	token tok; /* tok=0, 1, 2, 3 Palabra Reservada, tok=ID=4 Identificador */
 };
 
@@ -15,4 +15,5 @@ int buscar(char *id, struct ts_entry *ts, token *tok);
 void colocar(char *id, struct ts_entry *ts);
 void chequear(char *id);
 
+void inicializarDiccionario();
 #endif

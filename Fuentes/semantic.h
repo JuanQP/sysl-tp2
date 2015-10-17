@@ -2,6 +2,7 @@
 #define SEMANTIC_H_INCLUDED
 
 #include "symbol.h"
+#include "scanner.h"
 
 struct reg_expr {
 	token clase;

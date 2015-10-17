@@ -2,6 +2,7 @@
 #define PARSER_H_INCLUDED
 
 #include "semantic.h"
+#include "scanner.h"
 
 void objetivo(void);
 void programa(void);
