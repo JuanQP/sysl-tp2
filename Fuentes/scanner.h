@@ -1,6 +1,8 @@
 #ifndef SCANNER_H_INCLUDED
 #define SCANNER_H_INCLUDED
 
+#include <stdio.h>
+
 typedef enum { INICIO, FIN, LEER, ESCRIBIR, ID, CONSTANTE, PARENIZQUIERDO,
     PARENDERECHO, PUNTOYCOMA, COMA, ASIGNACION, SUMA, RESTA,
 	MULTIPLICACION, DIVISION, COMENTARIO, FDT,ERRORLEXICO,
@@ -24,5 +26,10 @@ token proximoToken(void);
 
 /*Verifica que el token devuelto por el scanner coincida con el token que se esperaba.*/
 void match(token tok);
+
+/*Defino el fuente donde voy a escribir el pseudo-assambler.*/
+extern FILE *fuente;
+
+int sonIguales(char*, char*);
 
 #endif

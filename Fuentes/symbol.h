@@ -15,4 +15,5 @@ int buscar(char *id, struct ts_entry *ts, token *tok);
 void colocar(char *id, struct ts_entry *ts);
 void chequear(char *id);
 
+void inicializarDiccionario();
 #endif

@@ -1,5 +1,4 @@
 inicio
-123abl
 //Variables sencillas.
 variableConstante := 5;
 variableConExpresion := 1 + 2;
@@ -16,9 +15,6 @@ prueba := 5 + 3 * 5;
 //Prueba sencilla de leer y escribir.
 leer(a);
 escribir(b);
-
-//Variable con error.
-variableMala := 1asd + 5;
 
 //Prueba mas completa de leer y escribir.
 leer(variableConstante, a);

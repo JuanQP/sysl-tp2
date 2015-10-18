@@ -2,6 +2,9 @@
 #define SEMANTIC_H_INCLUDED
 
 #include "symbol.h"
+#include "scanner.h"
+
+extern int numeroVariableTemporal;
 
 struct reg_expr {
 	token clase;
