@@ -4,6 +4,8 @@
 #include "symbol.h"
 #include "scanner.h"
 
+extern int numeroVariableTemporal;
+
 struct reg_expr {
 	token clase;
 	char nombre[TAMLEX];

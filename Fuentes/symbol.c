@@ -40,7 +40,7 @@ void chequear(char *lexema)
     {
         colocar(lexema, tabla_simb);
         printf("%2d-\e[1;34m[D]\e[0m: Se va a definir la variable \e[1;32m%s\e[0m.\n", numeroLinea, lexema);
-        generar("Declare", lexema, "", "");
+        generar("Declare", lexema, "Integer", "");
     }
 }
 
