@@ -75,7 +75,7 @@ void sentencia()
             match(PUNTOYCOMA);
             break;
         default:
-            errorSintactico(tokenProximo);
+            errorSintactico(tokenProximo, "ID, LEER o ESCRIBIR");
             break;
     }
 }
@@ -131,7 +131,7 @@ void primaria(struct reg_expr *preg)
             match(PARENDERECHO);
             break;
         default:
-            errorSintactico(tokenProximo);
+            errorSintactico(tokenProximo, "ID, CONSTANTE o PARENIZQUIERDO");
             break;
     }
 }
@@ -191,7 +191,7 @@ void operadorAditivo(struct reg_op *preg)
             *preg = registroSalida;
             break;
         default:
-            errorSintactico(tokenProximo);
+            errorSintactico(tokenProximo, "SUMA o RESTA");
             break;
     }
 }
@@ -213,7 +213,7 @@ void operadorMultiplicativo(struct reg_op *preg)
             *preg = registroSalida;
             break;
         default:
-            errorSintactico(tokenProximo);
+            errorSintactico(tokenProximo, "MULTIPLICACION o DIVISION");
             break; 
     }
 }
