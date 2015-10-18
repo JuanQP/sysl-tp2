@@ -4,6 +4,6 @@
 #include "scanner.h"
 
 void errorLexico(token tok);
-void errorSintactico(token tok);
+void errorSintactico(token tok, char*);
 
 #endif

@@ -5,6 +5,10 @@ all: Compilador
 test: Compilador
 	./Compilador < input
 
+#Permite hacer una prueba con el archivo de prueba del profe.
+test-profe: Compilador
+	./Compilador < entradaParaProbar.txt
+
 #Compila los objetos main y scanner para crear el ejecutable Compilador
 Compilador: main.o scanner.o parser.o error.o semantic.o symbol.o
 	gcc -o Compilador main.o scanner.o parser.o error.o semantic.o symbol.o
