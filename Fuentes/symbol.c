@@ -1,6 +1,8 @@
 #include "scanner.h"
 #include "symbol.h"
 
+void copiarLexema(char*, char*);
+
 /*Defino el largo del diccionario.*/
 struct ts_entry tabla_simb[100];
 int ultimoElemento = 0;
@@ -22,7 +24,9 @@ int buscar(char *lexema, struct ts_entry *tablaSimbolos, token *tk)
 void colocar(char *lexema, struct ts_entry *tablaSimbolos)
 {
     struct ts_entry nuevoSimbolo;
-    nuevoSimbolo.lexema = lexema;
+    
+    copiarLexema(lexema, nuevoSimbolo.lexema);
+    /*nuevoSimbolo.lexema = lexema;*/
     nuevoSimbolo.tok = ID;
     
     tablaSimbolos[ultimoElemento] = nuevoSimbolo;
@@ -35,7 +39,8 @@ void chequear(char *lexema)
     if(!buscar(lexema, tabla_simb, &tk))
     {
         colocar(lexema, tabla_simb);
-        /*Generar código de declaración*/
+        printf("%2d-\e[1;34m[D]\e[0m: Se va a definir la variable \e[1;32m%s\e[0m.\n", numeroLinea, lexema);
+        generar("Declare", lexema, "", "");
     }
 }
 
@@ -43,19 +48,19 @@ void chequear(char *lexema)
 void inicializarDiccionario()
 {
     struct ts_entry inicio;
-    inicio.lexema = "inicio";
+    copiarLexema("inicio", inicio.lexema);
     inicio.tok = INICIO;
 
     struct ts_entry fin;
-    fin.lexema = "fin";
+    copiarLexema("fin", fin.lexema);
     fin.tok = FIN;
 
     struct ts_entry leer;
-    leer.lexema = "leer";
+    copiarLexema("leer", leer.lexema);
     leer.tok = LEER;
 
     struct ts_entry escribir;
-    escribir.lexema = "escribir";
+    copiarLexema("escribir", escribir.lexema);
     escribir.tok = ESCRIBIR;
 
     tabla_simb[0] = inicio;
@@ -64,4 +69,15 @@ void inicializarDiccionario()
     tabla_simb[3] = escribir;
 
     ultimoElemento = 4;
+}
+
+void copiarLexema(char *fuente, char *destino)
+{
+    int indice = 0;
+    while (fuente[indice] != '\0')
+    {
+        destino[indice] = fuente[indice];
+        indice++;
+    }
+    destino[indice] = '\0';
 }

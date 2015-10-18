@@ -5,7 +5,7 @@
 #define TAMLEX 32+1
 
 struct ts_entry{
-	char *lexema;
+	char lexema[TAMLEX];
 	token tok; /* tok=0, 1, 2, 3 Palabra Reservada, tok=ID=4 Identificador */
 };
 

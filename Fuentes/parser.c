@@ -188,5 +188,5 @@ void identificador()
 {
     token tokenProximo = proximoToken();
     match(ID);
-    /*Debería ir acá la generación de código para declarar la variable.*/
+    procesar_id();
 }

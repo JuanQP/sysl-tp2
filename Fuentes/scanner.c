@@ -90,7 +90,11 @@ token proximoToken()
     /*Devuelvo el token. Si ya estaba un token por adelantado, no voy a pedir otro token más al scanner, devuelvo
     simplemente el token que tenía.*/
     /*Además, voy a buscarlo en el diccionario de simbolos para que lo corrija si es palabra reservada.*/
-    buscar(buffer, tabla_simb, &tokenActual);
+    if(tokenActual == ID)
+    {
+        buscar(buffer, tabla_simb, &tokenActual);
+    }
+
     return tokenActual;
 }
 
