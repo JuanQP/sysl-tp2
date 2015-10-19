@@ -12,7 +12,7 @@ typedef enum { INICIO, FIN, LEER, ESCRIBIR, ID, CONSTANTE, PARENIZQUIERDO,
 /*Guarda el lexema actual.*/
 extern char * const yytext;
 
-/*Guarda los nombres de los tokens en string.*/
+/*Guarda los nombres de los tokens.*/
 extern char *nombresToken[];
 
 /*Informa el número de línea del archivo siendo scaneado.*/
@@ -30,6 +30,7 @@ void match(token tok);
 /*Defino el fuente donde voy a escribir el pseudo-assambler.*/
 extern FILE *fuente;
 
+/*Informa si dos lexemas son iguales.*/
 int sonIguales(char*, char*);
 
 #endif

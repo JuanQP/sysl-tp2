@@ -20,7 +20,8 @@ int main()
     
     /*Llamo al analizador sintáctico.*/
     objetivo();
-
+    
+    /*Cierro el archivo.*/
     printf("\n[Scanner]: Trabajo terminado.\n");
     fclose(fuente);
     return 0;
@@ -32,6 +33,6 @@ void encabezado()
     printf("┌─────────────────────────────────────────────────────┐\n");
     printf("│       Universidad Tecnologica Nacional - FRBA       │\n");
     printf("│Sintaxis y Semantica de Lenguajes - UTN K2055 Grupo 4│\n");
-    printf("│        COMPILADOR DE LENGUAJE MICRO - Parser        │\n");
+    printf("│    COMPILADOR DE LENGUAJE MICRO - Entrega final     │\n");
     printf("└─────────────────────────────────────────────────────┘\n");
 }

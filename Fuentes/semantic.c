@@ -18,6 +18,7 @@ void terminar()
     generar("Stop", "", "", "");
 }
 
+/*Genera código de pseudo-assembler y lo escribe en el fuente.*/
 void generar(char *operacion, char *a, char *b, char *c)
 {   
     fprintf(fuente, "%s %s, %s, %s\n", operacion, a, b, c);
@@ -28,7 +29,7 @@ void asignar(struct reg_expr *vizq, struct reg_expr *vder)
     generar("Store", vder->nombre, vizq->nombre, "");
 }
 
-/*Devuelve un registro de expresión.*/
+/*Chequea la existencia del lexema actual, y luego crea el registro de expresión correspondiente..*/
 struct reg_expr procesar_id()
 {
     chequear(yytext);
@@ -40,6 +41,7 @@ struct reg_expr procesar_id()
     return registro;
 }
 
+/*Crea el registro de expresión correspondiente para la constante recién leída.*/
 struct reg_expr procesar_cte()
 {
     struct reg_expr registro;
@@ -49,6 +51,7 @@ struct reg_expr procesar_cte()
     return registro;
 }
 
+/*Crea el registro de operación correspondiente a la operación aritmética correspondiente.*/
 struct reg_op procesar_op()
 {
     struct reg_op registro;
@@ -81,34 +84,45 @@ void escribir_exp(struct reg_expr *pout)
     generar("Write", extraer(pout), "Integer", "");
 }
 
+/*Genera el código de pseudo-assembler de una expresión.*/
 struct reg_expr gen_infijo(struct reg_expr *pei, struct reg_op *op, struct reg_expr *ped)
 {
     struct reg_expr salida;
+
+    /*Genero el nombre de la variable temporal donde voy a almacenar el resultado.*/
     char variable[12];
     nombreVariableTemporal(variable);
+
+    /*Obtengo el nombre de la operación.*/
     char operacion[4];
     nombreOperacion(op, operacion);
 
+    /*Si alguno de los registros de expresión es un identificador, entonces lo chequeo.*/
     if(pei->clase == ID) chequear(pei->nombre);
     if(ped->clase == ID) chequear(ped->nombre);
     chequear(variable);
     
+    /*Genero el código de pseudo-assembler.*/
     generar(operacion, pei->nombre, ped->nombre, variable);
     
+    /*Armo el registro correspondiente a la operación recién realizada.*/
     copiarLexema(variable, salida.nombre);
     salida.clase = ID;
     salida.valor = 0;
 
+    /*Incremento el numero de variable temporal utilizada.*/
     numeroVariableTemporal++;
 
     return salida;
 }
 
+/*Genera el nombre de la variable temporal correspondiente (incrementa un valor numérico al final).*/
 void nombreVariableTemporal(char *var)
 {
     sprintf(var, "VarTemp%d", numeroVariableTemporal);
 }
 
+/*Genera el nombre de la operación correspondiente a un código de operación de un registro de operación.*/
 void nombreOperacion(struct reg_op *registro, char *nom)
 {
     switch(registro->cod_oper)
