@@ -11,16 +11,18 @@
 /*<objetivo> -> <programa> FDT #terminar*/
 void objetivo()
 {
+    /*Agrego las palabras reservadas al diccionario.*/
     inicializarDiccionario();
-    comenzar();
+
     programa();
     match(FDT);
     terminar();
 }
 
-/*<programa> -> INICIO <listaSentencias> FIN*/
+/*<programa> -> #comenzar INICIO <listaSentencias> FIN*/
 void programa()
 {
+    comenzar();
     match(INICIO);
     listaSentencias();
     match(FIN);
@@ -32,20 +34,23 @@ void listaSentencias ()
     sentencia();
     
     while (1)
-    { /* un ciclo indefinido */
+    {
         switch (proximoToken()) 
         {
             case ID:
             case LEER:
-            case ESCRIBIR: /* detectó token correcto */
-                sentencia(); /* procesa la secuencia opcional */
+            case ESCRIBIR:
+                sentencia();
                 break;
             default:
                 return;
-        } /* fin switch */
+        }
     }
 }
 
+/*<sentencia> -> <identificador := <expresion> #asignar ; |
+                read ( <listaIdentificadores> ) ; |
+                write ( <listaExpresiones> ) ;*/
 void sentencia() 
 {
     struct reg_expr registroI;
@@ -80,7 +85,7 @@ void sentencia()
     }
 }
 
-/*Genera el código de cada uno de los identificadores pasado en LEER.*/
+/*<listaIdentificadores> -> <identificador> #leer_id {, <identificador> #leer_id}*/
 void listaIdentificadores()
 {
     struct reg_expr registro;
@@ -95,22 +100,21 @@ void listaIdentificadores()
     }
 }
 
-/* <listaExpresiones> → <expresión> {COMA <expresión>} */
+/* <listaExpresiones> → <expresión> #escribir_exp {, <expresión>} */
 void listaExpresiones () 
 {
     struct reg_expr registro;
-    expresion(&registro); /* la primera de la lista de expresiones */
+    expresion(&registro);
     escribir_exp(&registro);
     while (proximoToken() == COMA) 
-    { /* El resto de las opcionales */
+    {
         match(COMA);
         expresion(&registro);
         escribir_exp(&registro);
-        /*#excribir_exp*/
     }
 }
 
-/* <primaria> → ID | CONSTANTE | PARENIZQUIERDO <expresión> PARENDERECHO */
+/* <primaria> → <identificador> | CONSTANTE #procesar_cte | ( <expresión> )*/
 void primaria(struct reg_expr *preg) 
 {
     struct reg_expr registroSalida;    
@@ -136,7 +140,7 @@ void primaria(struct reg_expr *preg)
     }
 }
 
-/* <expresion> -> <primaria> {<operadorAditivo> <primaria>} */
+/* <expresion> -> <termino> {<operadorAditivo> <termino> #gen_infijo} */
 void expresion (struct reg_expr *preg)
 {
     struct reg_expr operandoIzq, operandoDer;
@@ -148,14 +152,13 @@ void expresion (struct reg_expr *preg)
     {
         operadorAditivo(&op);
         termino(&operandoDer);
-        /*Acá debería ir la generación de código (y declaración de variables).*/
         operandoIzq = gen_infijo(&operandoIzq, &op, &operandoDer);
     }
 
     *preg = operandoIzq;
 }
 
-/*Aca van los operadores multiplicativos.*/
+/*<termino> -> <primaria> { <operadorMultiplicativo> <primaria> #gen_infijo}*/
 void termino(struct reg_expr *preg)
 {
     struct reg_expr operandoIzq, operandoDer;
@@ -167,13 +170,13 @@ void termino(struct reg_expr *preg)
     {
         operadorMultiplicativo(&op);
         primaria(&operandoDer);
-        /*Acá debería ir la geenración de código (y declaración de variables).*/
         operandoIzq = gen_infijo(&operandoIzq, &op, &operandoDer);
     }
 
     *preg = operandoIzq;
 }
 
+/*<operadorAditivo> -> SUMA #procesar_op | RESTA #procesar_op*/
 void operadorAditivo(struct reg_op *preg)
 {
     struct reg_op registroSalida;
@@ -196,6 +199,7 @@ void operadorAditivo(struct reg_op *preg)
     }
 }
 
+/*<operadorMultiplicativo> -> MULTIPLICACION #procesar_op | DIVISION #procesar_op*/
 void operadorMultiplicativo(struct reg_op *preg)
 {
     struct reg_op registroSalida;

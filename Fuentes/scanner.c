@@ -17,7 +17,6 @@ int requiereCentinela(int);
 int columna(char);
 int esAceptor(int);
 token tokenCorrespondiente(int);
-token verificarPalabraReservada();
 int esErrorLexico(token);
 token scanner();
 
@@ -113,7 +112,7 @@ int esErrorLexico(token tokenAVerificar)
     }
 }
 
-/*Informa si el token esperado coincide con el token escaneado por scanner().*/
+/*Informa si el token esperado coincide con el token devuelto por scanner().*/
 void match(token tokenEsperado)
 {
     /*Pido el próximo token.*/
@@ -126,7 +125,6 @@ void match(token tokenEsperado)
     if(tokenObtenido == tokenEsperado)
     {
         printf("%2d-\e[1;32m[√]\e[0m: Token correcto (%s).\n", numeroLinea, nombresToken[tokenEsperado]);
-        /*ProcesarID();*/
     }
     else
     {
@@ -305,7 +303,7 @@ token verificarPalabraReservada()
 se devuelve el token correspondiente a dicho estado final.*/
 token tokenCorrespondiente(int estado)
 {
-    /*Es un identificador. Tenemos que ver si es palabra reservada.*/	
+    /*Es un identificador. proximoToken() verificará si es palabra reservada.*/	
     if(estado == 2) return ID;
     
     if(estado == 4)	return CONSTANTE;
